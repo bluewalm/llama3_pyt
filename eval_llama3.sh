@@ -20,27 +20,23 @@ for BATCH_SIZE in 64
 do
 for DIM in 128
 do
-for N_HEADS in 4
-do
-for N_KV_HEADS in 4
+for CORE_DIM in 128 424
 do
 for STEPS in 80000
 do
 for SEQLEN in 4096 8192
 do
-python -m llama3 evaluate --eval_corpus         /workspace/Datasets/ThePile/pretrain_data/eval \
-                        --tokenizer             tokenizer.model \
-                        --n_layers              ${N_LAYERS} \
-                        --dim                   ${DIM} \
-                        --n_heads               ${N_HEADS} \
-                        --n_kv_heads            ${N_KV_HEADS} \
-                        --from_checkpoint       llama3-softmax-layers${N_LAYERS}-dim${DIM}-heads${N_HEADS}-kvheads${N_KV_HEADS}-seqlen${SEQLEN}-batchsize${BATCH_SIZE}-steps${STEPS}.pth \
-                        --batch_size            ${BATCH_SIZE} \
-                        --max_seq_len           ${SEQLEN} \
-                        --total_steps           1000 \
+python -m llama3 evaluate --eval_corpus          /workspace/Datasets/ThePile/pretrain_data/eval \
+                        --tokenizer              tokenizer.model \
+                        --n_layers               ${N_LAYERS} \
+                        --dim                    ${DIM} \
+                        --core_dim               ${CORE_DIM} \
+                        --from_checkpoint        llama3-softplus-layers${N_LAYERS}-dim${DIM}-coredim${CORE_DIM}-seqlen${SEQLEN}-batchsize${BATCH_SIZE}-steps${STEPS}.pth \
+                        --batch_size             ${BATCH_SIZE} \
+                        --max_seq_len            ${SEQLEN} \
+                        --total_steps            1000 \
                         --allow_tf32 \
                         --bf16
-done
 done
 done
 done

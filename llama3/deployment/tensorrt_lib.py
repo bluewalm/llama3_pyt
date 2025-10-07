@@ -270,9 +270,9 @@ class Internal:
         trt_outputs = do_inference_v3(self.trt_context, inputs=self.inputs, outputs=self.outputs, stream=self.stream)
         output_shape = list(input.shape) + [-1]
         output = trt_outputs[0].reshape(output_shape)
-        updated_k_cache_shape = list(k_cache.shape[:2]) + [-1] + list(k_cache.shape[3:])
+        updated_k_cache_shape = list(k_cache.shape[:3]) + [-1]
         updated_k_cache = trt_outputs[1].reshape(updated_k_cache_shape)
-        updated_v_cache_shape = list(v_cache.shape[:2]) + [-1] + list(v_cache.shape[3:])
+        updated_v_cache_shape = list(v_cache.shape[:3]) + [-1]
         updated_v_cache = trt_outputs[2].reshape(updated_v_cache_shape)
         output = convert_nparray_to_tensor(output).to(device=device)
         updated_k_cache = convert_nparray_to_tensor(updated_k_cache).to(device=device)

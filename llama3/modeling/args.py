@@ -19,15 +19,12 @@ from dataclasses import dataclass, fields
 @dataclass
 class ModelArgs:
     dim: int
+    core_dim: int
     max_seq_len: int
     n_layers: int
-    n_heads: int
-    n_kv_heads: int
     norm_eps: float
     rope_theta: float
     use_scaled_rope: bool
-    multiple_of: int
-    ffn_dim_multiplier: float
     dropout: float
     vocab_size: int
     
@@ -39,16 +36,4 @@ class ModelArgs:
         # set the defaults (important) 
         if getattr(kwargs, 'dropout', None) is None:
             setattr(self, 'dropout', 0.1)
-        if getattr(kwargs, 'n_kv_heads', None) is None:
-            setattr(self, 'n_kv_heads', self.n_heads)
-        if getattr(kwargs, 'n_kv_heads', None) is None:
-            setattr(self, 'n_kv_heads', self.n_heads)
-        if getattr(kwargs, 'multiple_of', None) is None:
-            setattr(self, 'multiple_of', 256)  # make SwiGLU hidden layer size multiple of large power of 2 
-        if getattr(kwargs, 'ffn_dim_multiplier', None) is None:
-            setattr(self, 'ffn_dim_multiplier', None)
-        # asserts 
-        assert self.n_kv_heads <= self.n_heads
-        assert self.n_heads % self.n_kv_heads == 0
-        assert self.dim % self.n_heads == 0
 

@@ -20,9 +20,7 @@ for BATCH_SIZE in 64
 do
 for DIM in 128
 do
-for N_HEADS in 4
-do
-for N_KV_HEADS in 4
+for CORE_DIM in 128 424
 do
 for STEPS in 80000
 do
@@ -34,9 +32,8 @@ torchrun --nnodes=1 --nproc_per_node=1 -m llama3 multitrain \
                      --tokenizer              tokenizer.model \
                      --n_layers               ${N_LAYERS} \
                      --dim                    ${DIM} \
-                     --n_heads                ${N_HEADS} \
-                     --n_kv_heads             ${N_KV_HEADS} \
-                     --to_checkpoint          llama3-softmax-layers${N_LAYERS}-dim${DIM}-heads${N_HEADS}-kvheads${N_KV_HEADS}-seqlen${SEQLEN}-batchsize${BATCH_SIZE}-steps${STEPS}.pth \
+                     --core_dim               ${CORE_DIM} \
+                     --to_checkpoint          llama3-softplus-layers${N_LAYERS}-dim${DIM}-coredim${CORE_DIM}-seqlen${SEQLEN}-batchsize${BATCH_SIZE}-steps${STEPS}.pth \
                      --batch_size             ${BATCH_SIZE} \
                      --accumulation_steps     1 \
                      --max_seq_len            ${SEQLEN} \
@@ -45,7 +42,6 @@ torchrun --nnodes=1 --nproc_per_node=1 -m llama3 multitrain \
                      --save_steps             ${STEPS} \
                      --allow_tf32 \
                      --bf16
-done
 done
 done
 done

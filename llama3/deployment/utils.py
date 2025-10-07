@@ -19,6 +19,11 @@ import subprocess
 import numpy as np
 from ml_dtypes import bfloat16
 import torch
+import bluewalm
+
+
+package_path = os.path.dirname(os.path.realpath(bluewalm.__file__))
+plugin_path = os.path.join(package_path, 'operators', 'tensorrt', 'libbluewalmPlugin.so')
 
 
 def execute(command):
@@ -65,7 +70,7 @@ def shape_to_str(shape):
 
 
 def convert_to_tensorrt(precision, min_sample, opt_sample, max_sample):
-    command = "trtexec --onnx=./model.onnx"
+    command = "trtexec --onnx=./model.onnx --staticPlugins=" + str(plugin_path)
     command += " --loadInputs=input:./input.dat,k_cache:./k_cache.dat,v_cache:./v_cache.dat"
     if precision == 'fp16':
         command += " --inputIOFormats=int64:chw,fp16:chw,fp16:chw"

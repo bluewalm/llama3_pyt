@@ -104,20 +104,14 @@ def add_subparser(subparsers : argparse._SubParsersAction):
                        help='maximum sequence length')
     group.add_argument('--n_layers', type=positive_integer, required=True,
                        help='number of transformer layers')
-    group.add_argument('--n_heads', type=positive_integer, required=True, 
-                       help='number of heads in an attention layer')
-    group.add_argument('--n_kv_heads', default=None, type=positive_integer,
-                       help='number of multi-heads in attention layer')
+    group.add_argument('--core_dim', default=None, type=positive_integer,
+                       help='core dimension of the attention layer')
     group.add_argument('--norm_eps', default=1e-5, type=float,
                        help='norm eps')
     group.add_argument('--rope_theta', default=500000, type=float,
                        help='rope theta')
     group.add_argument('--use_scaled_rope', default=False, type=bool,
                        help='use scaled rope')
-    group.add_argument('--multiple_of', default=256, type=positive_integer,
-                       help='bottleneck parameter')
-    group.add_argument('--ffn_dim_multiplier', default=None, type=positive_integer,
-                       help='bottleneck parameter')
     # training and evaluation 
     group = parser.add_argument_group('training and evaluation')
     group.add_argument('--seed', default=None, type=int, 

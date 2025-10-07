@@ -22,7 +22,7 @@ from typing import Optional, Dict
 # 
 from llama3.data import Dataloader
 from llama3.utils import Recorder, print_model, cycle
-from llama3.deployment.utils import execute, export_inputs, shape_to_str, convert_to_tensorrt
+from llama3.deployment.utils import execute, export_inputs, shape_to_str, convert_to_tensorrt, plugin_path
 import llama3.deployment.tensorrt_lib as tensorrt_lib
 
 
@@ -198,11 +198,11 @@ class Deployer:
                              input_names=['input', 'k_cache', 'v_cache'], 
                              output_names=['output', 'updated_k_cache', 'updated_v_cache'], 
                              dynamic_axes={'input' : {0 : 'batch_size', 1 : 'query_len'}, 
-                                           'k_cache' : {1 : 'batch_size', 2 : 'cache_len'}, 
-                                           'v_cache' : {1 : 'batch_size', 2 : 'cache_len'}, 
+                                           'k_cache' : {1 : 'batch_size', 3 : 'cache_len'}, 
+                                           'v_cache' : {1 : 'batch_size', 3 : 'cache_len'}, 
                                            'output' : {0 : 'batch_size', 1 : 'query_len'}, 
-                                           'updated_k_cache' : {1 : 'batch_size', 2 : 'updated_cache_len'}, 
-                                           'updated_v_cache' : {1 : 'batch_size', 2 : 'updated_cache_len'}})
+                                           'updated_k_cache' : {1 : 'batch_size', 3 : 'updated_cache_len'}, 
+                                           'updated_v_cache' : {1 : 'batch_size', 3 : 'updated_cache_len'}})
         
         # trt export 
         export_inputs(opt_sample)
@@ -258,7 +258,7 @@ class Deployer:
         
         print("inference benchmark - trt")
         # measure trt latency 
-        command = "trtexec --loadEngine=./model.engine"
+        command = "trtexec --loadEngine=./model.engine --staticPlugins=" + str(plugin_path)
         if precision == 'fp16':
             command += " --inputIOFormats=int64:chw,fp16:chw,fp16:chw"
             command += " --outputIOFormats=fp16:chw,fp16:chw,fp16:chw"
@@ -272,7 +272,7 @@ class Deployer:
             command += " --bf16"
         else:
             raise Exception('unknown precision')
-        cache_len = opt_sample[1].shape[2]
+        cache_len = opt_sample[1].shape[3]
         if cache_len == 0:
             command += " --loadInputs=input:./input.dat"
         else:

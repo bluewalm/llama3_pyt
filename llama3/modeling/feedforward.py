@@ -1,12 +1,18 @@
 # Copyright (c) 2024, BLUEWALM. All rights reserved. 
 # 
-# Copyright (c) Meta Platforms, Inc. and affiliates. All rights reserved. 
-# This software may be used and distributed in accordance with the terms of the Llama 3 Community License Agreement. 
+# Licensed under the Apache License, Version 2.0 (the "License"); 
+# you may not use this file except in compliance with the License. 
+# You may obtain a copy of the License at 
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software 
+# distributed under the License is distributed on an "AS IS" BASIS, 
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+# See the License for the specific language governing permissions and 
+# limitations under the License. 
 
-import math
 import torch
-import torch.nn.functional as F
-from typing import Optional
 
 
 class FLinear(torch.nn.Linear):
@@ -32,32 +38,4 @@ class Linear(FLinear):
     def reset_parameters(self):
         with torch.no_grad():
             self.weight.normal_(0.0, 0.02)
-
-
-class FeedForward(torch.nn.Module):
-    def __init__(
-        self,
-        dim: int,
-        hidden_dim: int,
-        multiple_of: int,
-        ffn_dim_multiplier: Optional[float],
-    ):
-        super().__init__()
-        hidden_dim = int(2 * hidden_dim / 3)
-        # custom dim factor multiplier
-        if ffn_dim_multiplier is not None:
-            hidden_dim = int(ffn_dim_multiplier * hidden_dim)
-        hidden_dim = multiple_of * ((hidden_dim + multiple_of - 1) // multiple_of)
-        
-        self.w1 = FLinear(dim, hidden_dim, bias=False)
-        self.w2 = FLinear(hidden_dim, dim, bias=False)
-        self.w3 = FLinear(dim, hidden_dim, bias=False)
-    
-    def reset_parameters(self):
-        self.w1.reset_parameters()
-        self.w2.reset_parameters()
-        self.w3.reset_parameters()
-    
-    def forward(self, x):
-        return self.w2(F.silu(self.w1(x)) * self.w3(x))
 

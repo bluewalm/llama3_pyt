@@ -13,5 +13,5 @@
 # limitations under the License. 
 
 from llama3.deployment.deployer import Deployer
-from llama3.deployment.utils import execute, export_inputs, shape_to_str, convert_to_tensorrt
+from llama3.deployment.utils import execute, export_inputs, shape_to_str, convert_to_tensorrt, plugin_path
 

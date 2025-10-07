@@ -13,7 +13,7 @@
 # limitations under the License. 
 
 from llama3.modeling.args import ModelArgs
-from llama3.modeling.feedforward import Linear, FeedForward
+from llama3.modeling.feedforward import Linear
 from llama3.modeling.rope import build_rope_cache, apply_rotary_emb
 from llama3.modeling.attention import AttentionLayer
 from llama3.modeling.embedding import TokenEmbedding
